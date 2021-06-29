@@ -469,7 +469,7 @@ def patch_record(fn, record, subdir, instructions, index):
     # to the patch instructions
     original_record = copy.deepcopy(record)
     patch_record_in_place(fn, record, subdir)
-    keys_to_check = ['depends', 'constrains', 'namespace', 'track_features', 'features']
+    keys_to_check = ['depends', 'constrains', 'namespace', 'track_features', 'features', 'subdir']
     for key in keys_to_check:
         if record.get(key) != original_record.get(key):
             instructions["packages"][fn][key] = record.get(key)
@@ -496,6 +496,14 @@ def patch_record_in_place(fn, record, subdir):
     build_number = record['build_number']
     depends = record['depends']
     constrains = record.get("constrains", [])
+
+    #############
+    #   subdir  #
+    #############
+    # All packages must have a subdir value specified.  Some repositories
+    # fail if this is not provided.
+    if 'subdir' not in record:
+        record['subdir'] = subdir
 
     #############
     # namespace #
